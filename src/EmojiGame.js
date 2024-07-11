@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const EmojiGame = () => {
   const emojis = ['😀', '😎', '😊', '🥳', '😇', '😂', '🤣', '😍', '😜', '😉'];
@@ -6,16 +6,16 @@ const EmojiGame = () => {
   const [flippedIndices, setFlippedIndices] = useState([]);
   const [matchedIndices, setMatchedIndices] = useState([]);
 
-  useEffect(() => {
-    initializeGame();
-  }, [initializeGame]);
-
-  const initializeGame = () => {
+  const initializeGame = useCallback(() => {
     const initialCards = emojis.concat(emojis).sort(() => Math.random() - 0.5);
     setCards(initialCards);
     setFlippedIndices([]);
     setMatchedIndices([]);
-  };
+  }, [emojis]);
+
+  useEffect(() => {
+    initializeGame();
+  }, [initializeGame]);
 
   const handleClick = (index) => {
     if (flippedIndices.length === 2) {
@@ -38,13 +38,12 @@ const EmojiGame = () => {
   const isMatched = (index) => matchedIndices.includes(index);
   const isFlipped = (index) => flippedIndices.includes(index) || isMatched(index);
 
-  // Check if all cards are matched
   useEffect(() => {
     if (matchedIndices.length === emojis.length * 2) {
       alert('Congratulations! You matched all emojis.');
       initializeGame(); // Reset the game after completion
     }
-  }, [matchedIndices, emojis.length]);
+  }, [matchedIndices, initializeGame, emojis.length]);
 
   return (
     <div className="emoji-game">
@@ -66,3 +65,4 @@ const EmojiGame = () => {
 };
 
 export default EmojiGame;
+
