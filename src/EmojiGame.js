@@ -8,7 +8,7 @@ const EmojiGame = () => {
 
   useEffect(() => {
     initializeGame();
-  }, []);
+  }, [initializeGame]);
 
   const initializeGame = () => {
     const initialCards = emojis.concat(emojis).sort(() => Math.random() - 0.5);
