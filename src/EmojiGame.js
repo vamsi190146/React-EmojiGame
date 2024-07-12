@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 const EmojiGame = () => {
-  const emojis = ['😀', '😎', '😊', '🥳', '😇', '😂', '🤣', '😍', '😜', '😉'];
+  const emojis = useMemo(() => ['😀', '😎', '😊', '🥳', '😇', '😂', '🤣', '😍', '😜', '😉'], []);
+
   const [cards, setCards] = useState([]);
   const [flippedIndices, setFlippedIndices] = useState([]);
   const [matchedIndices, setMatchedIndices] = useState([]);
