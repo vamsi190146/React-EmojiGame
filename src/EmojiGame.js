@@ -17,33 +17,33 @@ const EmojiGame = () => {
     initializeGame();
   }, [initializeGame]);
 
-  const handleClick = (index) => {
+  const checkMatch = useCallback(() => {
+    const [index1, index2] = flippedIndices;
+    if (cards[index1] === cards[index2]) {
+      setMatchedIndices((prev) => [...prev, index1, index2]);
+    }
+    setFlippedIndices([]);
+  }, [flippedIndices, cards]);
+
+  const handleClick = useCallback((index) => {
     if (flippedIndices.length === 2) {
       setTimeout(() => {
         checkMatch();
       }, 1000);
     } else {
-      setFlippedIndices([...flippedIndices, index]);
+      setFlippedIndices((prev) => [...prev, index]);
     }
-  };
+  }, [flippedIndices, checkMatch]);
 
-  const checkMatch = () => {
-    const [index1, index2] = flippedIndices;
-    if (cards[index1] === cards[index2]) {
-      setMatchedIndices([...matchedIndices, index1, index2]);
-    }
-    setFlippedIndices([]);
-  };
-
-  const isMatched = (index) => matchedIndices.includes(index);
-  const isFlipped = (index) => flippedIndices.includes(index) || isMatched(index);
+  const isMatched = useCallback((index) => matchedIndices.includes(index), [matchedIndices]);
+  const isFlipped = useCallback((index) => flippedIndices.includes(index) || isMatched(index), [flippedIndices, isMatched]);
 
   useEffect(() => {
     if (matchedIndices.length === emojis.length * 2) {
       alert('Congratulations! You matched all emojis.');
       initializeGame(); // Reset the game after completion
     }
-  }, [matchedIndices, initializeGame, emojis.length]);
+  }, [matchedIndices, emojis.length, initializeGame]);
 
   return (
     <div className="emoji-game">
@@ -55,7 +55,7 @@ const EmojiGame = () => {
             className={`card ${isFlipped(index) ? 'flipped' : ''}`}
             onClick={() => !isFlipped(index) && handleClick(index)}
           >
-            <span className="emoji">{isFlipped(index) || isMatched(index) ? emoji : '❓'}</span>
+            <span className="emoji">{isFlipped(index) ? emoji : '❓'}</span>
           </div>
         ))}
       </div>
@@ -65,4 +65,3 @@ const EmojiGame = () => {
 };
 
 export default EmojiGame;
-
